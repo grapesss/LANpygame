@@ -27,19 +27,31 @@ left_player_pos = [50, 100]
 left_player_direction = ""
 right_player_pos = [750, 100]
 right_player_direction = ""
+speed = 2
 
 ball_size = 50
 ball_pos = [100, 100]
-speed = 3
-ball_direction = ""
+ball_speed = 1
+ball_direction = "left"
 
 def update_ball_pos(direction, pos):
 	if direction == "left":
-		pos[0] -= speed
+		pos[0] -= ball_speed
 	elif direction == "right":
-		pos[0] += speed
+		pos[0] += ball_speed
 
+def detect_collision(player, ball):
+    p_x = player[0]
+    p_y = player[1]
+    b_x = ball[0]
+    b_y = ball[1]
 
+    if (b_x >= p_x and b_x < (p_x + player_width)) or (p_x >= b_x and p_x < (b_x + ball_size)):
+        if (b_y >= p_y and b_y < (p_y + player_width)) or (p_y >= b_y and p_y < (b_y + ball_size)):
+            return True
+
+def give_points():
+	pass # For now
 
 while not game_over:
 	keys = pygame.key.get_pressed()
@@ -81,7 +93,11 @@ while not game_over:
 	if ball_pos[0] < 0:
 		score[1] += 1
 
-	
+	if detect_collision(left_player_pos, ball_pos):
+		ball_direction = "right"
+
+	if detect_collision(right_player_pos, ball_pos):
+		ball_direction = "left"
 
 	update_ball_pos(ball_direction, ball_pos)
 	screen.fill(black)
